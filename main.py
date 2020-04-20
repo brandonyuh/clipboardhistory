@@ -7,7 +7,9 @@ import time
 from PIL import ImageGrab
 from PIL import ImageChops
 
-check_delay = 1
+import keyboard
+
+check_delay = 5
 save_directory = "images/"
 clipboard_value = ""
 clipboard_image = None
@@ -19,6 +21,18 @@ clipboard_timestamp_file = "clipboard_timestamp.txt"
 def main():
     tread = threading.Thread(target=periodic_check)
     tread.start()
+
+    keyboard_check_tread = threading.Thread(target=keyboard_check)
+    keyboard_check_tread.start()
+
+def keyboard_check():
+    while True:
+        try:
+            if keyboard.is_pressed('c'):
+                check_changed()
+                break
+        except:
+            break
 
 
 def periodic_check():
