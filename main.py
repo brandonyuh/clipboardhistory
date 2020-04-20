@@ -11,7 +11,9 @@ check_delay = 1
 save_directory = "images/"
 clipboard_value = ""
 clipboard_image = None
-last_image_file = ""
+
+clipboard_file = "clipboard.txt"
+clipboard_timestamp_file = "clipboard_timestamp.txt"
 
 
 def main():
@@ -39,8 +41,23 @@ def check_changed():
 
 
 def save_text(new_clipboard_value):
-    print("TODO save " + new_clipboard_value + " to file")
-    pass
+    if not os.path.isfile(clipboard_file):
+        with open(clipboard_file, 'a'):
+            os.utime(clipboard_file, None)
+    if not os.path.isfile(clipboard_timestamp_file):
+        with open(clipboard_timestamp_file, 'a'):
+            os.utime(clipboard_timestamp_file, None)
+
+    with open(clipboard_file, 'r') as original:
+        data = original.read()
+    with open(clipboard_file, 'w') as modified:
+        modified.write(new_clipboard_value + "\n" + data)
+
+    with open(clipboard_timestamp_file, 'r') as original:
+        data = original.read()
+    with open(clipboard_timestamp_file, 'w') as modified:
+        modified.write(getTimeStamp() + "\n")
+        modified.write(new_clipboard_value + "\n" + data)
 
 
 def save_image():
