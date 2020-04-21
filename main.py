@@ -34,6 +34,17 @@ def main():
     menu_setup(root)
     root.mainloop()
 
+def label_toast(text,duration):
+    label = tk.Label(root, text=text, fg = "red")
+    label.pack(fill=tk.X)
+    tread = threading.Thread(target=partial(toast_close, label, duration))
+    tread.setDaemon(True)
+    tread.start()
+
+def toast_close(label, duration):
+    time.sleep(duration)
+    label.pack_forget()
+
 def add_text_to_window(text):
     text = str(text)
     label = tk.Label(root, text=text)
@@ -44,6 +55,7 @@ def label_clicked(text,label,event):
     #label.pack_forget()
     pyperclip.copy(text)
     check_changed()
+    label_toast("Copied to clipboard", 1)
 
 def menu_setup(root):
     menubar = tk.Menu(root)
