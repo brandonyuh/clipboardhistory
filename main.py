@@ -8,6 +8,9 @@ from PIL import ImageGrab
 from PIL import ImageChops
 
 import keyboard
+import tkinter as tk
+
+root = tk.Tk()
 
 check_delay = 5
 save_directory = "images/"
@@ -20,10 +23,28 @@ clipboard_timestamp_file = "clipboard_timestamp.txt"
 
 def main():
     tread = threading.Thread(target=periodic_check)
+    tread.setDaemon(True)
     tread.start()
 
     keyboard_check_tread = threading.Thread(target=keyboard_check)
+    keyboard_check_tread.setDaemon(True)
     keyboard_check_tread.start()
+    root.geometry("500x500")
+    menu_setup(root)
+    root.mainloop()
+
+
+def menu_setup(root):
+    menubar = tk.Menu(root)
+    filemenu = tk.Menu(menubar, tearoff=0)
+    menubar.add_cascade(label="File", underline=0, menu=filemenu)
+    filemenu.add_command(label="Exit", underline=1, command=quit)
+    root.config(menu=menubar)
+
+
+def quit():
+    root.quit()
+
 
 def keyboard_check():
     while True:
