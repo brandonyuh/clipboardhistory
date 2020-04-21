@@ -10,6 +10,8 @@ from PIL import ImageChops
 import keyboard
 import tkinter as tk
 
+from functools import partial
+
 root = tk.Tk()
 
 check_delay = 5
@@ -29,10 +31,19 @@ def main():
     keyboard_check_tread = threading.Thread(target=keyboard_check)
     keyboard_check_tread.setDaemon(True)
     keyboard_check_tread.start()
-    root.geometry("500x500")
     menu_setup(root)
     root.mainloop()
 
+def add_text_to_window(text):
+    text = str(text)
+    label = tk.Label(root, text=text)
+    label.bind("<Button>", partial(label_clicked, text, label))
+    label.pack(fill=tk.X)
+
+def label_clicked(text,label,event):
+    #label.pack_forget()
+    pyperclip.copy(text)
+    check_changed()
 
 def menu_setup(root):
     menubar = tk.Menu(root)
@@ -93,6 +104,7 @@ def save_text(new_clipboard_value):
     with open(clipboard_timestamp_file, 'w') as modified:
         modified.write(getTimeStamp() + "\n")
         modified.write(new_clipboard_value + "\n" + data)
+    add_text_to_window(new_clipboard_value)
 
 
 def save_image():
